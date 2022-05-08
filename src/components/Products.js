@@ -11,7 +11,7 @@ const Container = styled.div`
 const Products = () => {
   return (
     <Container>
-        {popularProducts.map(item=><ProductItem item={item}/>)}
+        {popularProducts.map(item=><ProductItem item={item} key={item.id}/>)}
     </Container>
   )
 }

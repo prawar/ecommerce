@@ -1,4 +1,5 @@
 import styled from "@emotion/styled"
+import { mobile } from "../responsive"
 
 const Container = styled.div`
     width: 100%;
@@ -13,6 +14,7 @@ const Wrapper = styled.div`
     width: 25%;
     padding: 20px;
     background-color: white;
+    ${mobile({ width: '75%'})}
 `
 const Title = styled.h1`
     font-size: 24px;
@@ -47,8 +49,8 @@ const Link = styled.a`
 `
 
 const Login = () => {
-  return (
-    <Container>
+    return (
+        <Container>
             <Wrapper>
                 <Title>SIGN IN</Title>
                 <Form>
@@ -60,7 +62,7 @@ const Login = () => {
                 </Form>
             </Wrapper>
         </Container>
-  )
+    )
 }
 
 export default Login
