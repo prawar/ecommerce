@@ -1,10 +1,15 @@
 import { Add, Remove } from "@mui/icons-material"
+import { useEffect, useState } from "react"
+import { useLocation } from "react-router-dom"
 import styled from "styled-components"
 import Annonucement from "../components/Annonucement"
 import Footer from "../components/Footer"
 import Navbar from "../components/Navbar"
 import Newsletter from "../components/Newsletter"
-import { mobile } from "../responsive"
+import { addProduct } from "../redux/cartRedux"
+import { publicRequest } from "../requestMethods"
+import { mobile } from "../responsive";
+import { useDispatch } from "react-redux"
 
 const Container = styled.div``;
 
@@ -13,7 +18,7 @@ const Wrapper = styled.div`
     display: flex;
     justify-content: space-between;
     align-items: center;
-    ${mobile({padding: '10px', flexDirection: 'column'})}
+    ${mobile({ padding: '10px', flexDirection: 'column' })}
 `;
 const ImageContainer = styled.div`
     flex: 1;
@@ -22,12 +27,12 @@ const Image = styled.img`
     width: 100%;
     height: 90vh;
     object-fit: cover;
-    ${mobile({height: '40vh'})}
+    ${mobile({ height: '40vh' })}
 `;
 const InfoContainer = styled.div`
     flex: 1;
     padding: 0px 50px;
-    ${mobile({padding: '10px'})}
+    ${mobile({ padding: '10px' })}
 `;
 const Title = styled.h1`
     font-weight: 200;
@@ -46,7 +51,7 @@ const FilterContainer = styled.div`
     justify-content: space-between;
     margin: 30px 0px;
 
-    ${mobile({width: '100%'})}
+    ${mobile({ width: '100%' })}
 `
 
 const Filter = styled.div`
@@ -79,7 +84,7 @@ const AddContainer = styled.div`
     display: flex;
     align-items: center;
     justify-content: space-between;
-    ${mobile({width: '100%'})}
+    ${mobile({ width: '100%' })}
 `
 const AmountContainer = styled.div`
     display: flex;
@@ -109,48 +114,75 @@ const Button = styled.button`
 `
 
 const Product = () => {
+    const location = useLocation();
+    const id = location.pathname.split('/')[2];
+    const [product, setProduct] = useState({})
+    const [quantity, setQuantity] = useState(1)
+    const [color, setColor] = useState(null)
+    const [size, setSize] = useState(null)
+    const dispatch = useDispatch()
+
+
+    useEffect(() => {
+        const getProduct = async () => {
+            try {
+                const res = await publicRequest.get("/products/find/" + id)
+                setProduct(res.data);
+            } catch (e) {
+
+            }
+        }
+        getProduct();
+    }, [id])
+
+    const quantityHandler = (ch) => {
+        if (ch === 'd') {
+            quantity > 1 && setQuantity(prev => prev - 1)
+        }
+        else {
+            setQuantity(prev => prev + 1);
+        }
+    }
+
+    const handleClick = () => {
+        dispatch(addProduct({ ...product, quantity, color, size }))
+    }
     return (
         <Container>
             <Navbar />
             <Annonucement />
             <Wrapper>
                 <ImageContainer>
-                    <Image src="https://i.ibb.co/S6qMxwr/jean.jpg" />
+                    <Image src={product.img} />
                 </ImageContainer>
                 <InfoContainer>
-                    <Title>Denim Jumpsuit</Title>
-                    <Desc>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec
-                        venenatis, dolor in finibus malesuada, lectus ipsum porta nunc, at |
-                        iaculis arcu nisi sed mauris. Nulla fermentum vestibulum ex, eget |
-                        tristique tortor pretium ut. Curabitur elit justo, consequat id |
-                        condimentum ac, volutpat ornare.</Desc>
-                    <Price>2000 INR</Price>
+                    <Title>{product.title}</Title>
+                    <Desc>{product.desc} Lorem ipsum dolor sit amet, consectetur adipisicing elit. Repellendus, iusto error iste praesentium laudantium soluta officia rerum facere ut dicta ex laborum recusandae nisi? Aut voluptas adipisci ducimus non totam.</Desc>
+                    <Price>{product.price} INR</Price>
                     <FilterContainer>
                         <Filter>
                             <FilterTitle>Color</FilterTitle>
-                            <FilterColor color="black" />
-                            <FilterColor color="darkblue" />
-                            <FilterColor color="gray" />
+                            {product.color?.map(col => (
+                                <FilterColor color={col} key={col} onClick={() => setColor(col)} />
+                            ))}
                         </Filter>
                         <Filter>
                             <FilterTitle>Size</FilterTitle>
-                            <FilterSize>
-                                <FilterSizeOption>X</FilterSizeOption>
-                                <FilterSizeOption>XS</FilterSizeOption>
-                                <FilterSizeOption>M</FilterSizeOption>
-                                <FilterSizeOption>L</FilterSizeOption>
-                                <FilterSizeOption>XL</FilterSizeOption>
-                                <FilterSizeOption>XXL</FilterSizeOption>
+                            <FilterSize onChange={(e) => setSize(e.target.value)}>
+                                {product.size?.map(s =>
+                                    <FilterSizeOption>{s}</FilterSizeOption>
+                                )}
+
                             </FilterSize>
                         </Filter>
                     </FilterContainer>
                     <AddContainer>
                         <AmountContainer>
-                            <Remove />
-                            <Amount>1</Amount>
-                            <Add />
+                            <Remove sx={{ cursor: "pointer" }} onClick={() => quantityHandler("d")} />
+                            <Amount>{quantity}</Amount>
+                            <Add sx={{ cursor: "pointer" }} onClick={() => quantityHandler("i")} />
                         </AmountContainer>
-                        <Button>ADD TO CART</Button>
+                        <Button onClick={handleClick}>ADD TO CART</Button>
                     </AddContainer>
                 </InfoContainer>
             </Wrapper>
