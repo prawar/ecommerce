@@ -202,7 +202,7 @@ const Cart = () => {
                                         <ProductAmount>{product.quantity}</ProductAmount>
                                         <Remove />
                                     </ProductAmountContainer>
-                                    <ProductPrice>${product.price * product.quantity}</ProductPrice>
+                                    <ProductPrice>₹{product.price * product.quantity}</ProductPrice>
                                 </PriceDetail>
                             </Product>
                         )}
@@ -212,19 +212,19 @@ const Cart = () => {
                         <SummaryTitle>ORDER SUMMARY</SummaryTitle>
                         <SummaryItem>
                             <SummaryText>Subtotal</SummaryText>
-                            <SummaryItemPrice>$ {cart.total}</SummaryItemPrice>
+                            <SummaryItemPrice>₹ {cart.total}</SummaryItemPrice>
                         </SummaryItem>
                         <SummaryItem>
                             <SummaryText>Estimated Shipping</SummaryText>
-                            <SummaryItemPrice>$ 5.90</SummaryItemPrice>
+                            <SummaryItemPrice>₹ 5.90</SummaryItemPrice>
                         </SummaryItem>
                         <SummaryItem>
                             <SummaryText>Shipping Discount</SummaryText>
-                            <SummaryItemPrice>$ -5.90</SummaryItemPrice>
+                            <SummaryItemPrice>₹ -5.90</SummaryItemPrice>
                         </SummaryItem>
                         <SummaryItem type='total'>
                             <SummaryText>Total</SummaryText>
-                            <SummaryItemPrice>$ {cart.total}</SummaryItemPrice>
+                            <SummaryItemPrice>₹ {cart.total}</SummaryItemPrice>
                         </SummaryItem>
                         <StripeCheckout
                             name="MUNDRA'S"
